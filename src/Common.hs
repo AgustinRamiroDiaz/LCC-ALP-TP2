@@ -30,6 +30,7 @@ data Term  = Bound Int
             | Lam Term
         deriving (Show,Eq)
 
+
 -- Valores
 data Value
     =  VLam      (Value -> Value)

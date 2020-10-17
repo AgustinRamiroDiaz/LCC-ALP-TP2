@@ -10,15 +10,17 @@ import           Common
 import           Untyped
 
 ----------------------------------------------
--- Seccón 2 - Representacón de Lambda Términos 
+-- Seccón 2 - Representacón de Lambda Términos
 -- Ejercicio 1
 ----------------------------------------------
 
 num :: Integer -> LamTerm
-num = undefined
+num x = Abs "s" (Abs "z" (f x))
+        where f 0 = LVar "z"
+              f n = App (LVar "s") (f (n-1))
 
 -------------------------------------------------
--- Parser de Lambda Cálculo (Gramatica Extendida) 
+-- Parser de Lambda Cálculo (Gramatica Extendida)
 -------------------------------------------------
 
 totParser :: Parser a -> Parser a
@@ -53,7 +55,7 @@ parseStmt p =
 parseTermStmt :: Parser (Stmt Term)
 parseTermStmt = fmap (fmap conversion) (parseStmt parseLamTerm)
 
--- Parser para LamTerms 
+-- Parser para LamTerms
 parseLamTerm :: Parser LamTerm
 parseLamTerm = do
   bs <- many1 parseVarAbs

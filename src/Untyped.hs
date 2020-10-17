@@ -4,15 +4,22 @@ import           Control.Monad
 import           Data.List
 import           Data.Maybe
 
+
 import           Common
 
 ----------------------------------------------
--- Seccón 2  
+-- Seccón 2
 -- Ejercicio 2: Conversión a términos localmente sin nombres
 ----------------------------------------------
 
 conversion :: LamTerm -> Term
-conversion = undefined
+conversion t = conversion' t []
+
+conversion' :: LamTerm -> [String] -> Term
+conversion' (LVar v) s = case elemIndex v s of Nothing -> Free (Global v)
+                                               Just i -> Bound i
+conversion' (App t1 t2) s = conversion' t1 s :@: conversion' t2 s
+conversion' (Abs v t) s = Lam (conversion' t (v:s))
 
 -------------------------------
 -- Sección 3
