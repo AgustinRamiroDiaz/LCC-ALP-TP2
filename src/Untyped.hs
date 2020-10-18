@@ -42,16 +42,6 @@ eval' (Free name) (nvs, _) = case find ((== name) . fst) nvs of Just (_, v) -> v
 eval' (t1 :@: t2) e = vapp (eval' t1 e) (eval' t2 e)
 eval' (Lam t) (nvs, lEnv) = VLam (\value -> eval' t (nvs, (value: lEnv)))
 
--- -- (\x . (y 2 \x3) y z) (y 2 3) --> y
-
--- eval' _          _         = undefined
-
--- eval' (Lam (Bound 0) :@: Free (Global "y")) ([], []) == Free (Global "y")
-    -- eval' (Lam (Bound 0)) ([], []) == Lam (\x -> x)
-    -- eval' (Free (Global "y")) ([], []) == VNeutral (NFree (Global "y"))
-    -- vapp (Lam (\x -> x))
-
-
 --------------------------------
 -- Sección 4 - Mostrando Valores
 --------------------------------
@@ -60,7 +50,9 @@ quote :: Value -> Term
 quote = quote' 0
 
 quote' :: Int -> Value -> Term
-quote' i (VLam f) = case f (VNeutral (NFree (Quote i))) of VNeutral (NFree (Quote k)) -> Bound (i - k - 1)
-                                                           v -> quote' (i+1) v
-quote' _ (VNeutral (NFree name)) = Free name
+quote' i (VLam f) = Lam $ quote' (i + 1) (f (VNeutral (NFree (Quote i))))
+quote' i (VNeutral (NFree name)) = case name of Global _ -> Free name
+                                                Quote k -> Bound (i - k - 1)
 quote' i (VNeutral (NApp neutral v)) = quote' i (VNeutral neutral) :@: quote' i v
+--  of VNeutral (NFree (Quote k)) -> Lam (Bound (i - k - 1))
+--                                                            v -> Lam (quote' (i+1) v)
