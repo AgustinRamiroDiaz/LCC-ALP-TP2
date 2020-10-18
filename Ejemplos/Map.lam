@@ -1,0 +1,11 @@
+def map =
+    Y (\m f l .
+        (isnil l)
+            nil
+            (cons (f (head l)) (m f (tail l))))
+
+def mapN =
+    Y (\mapn f l .
+        (isnil l)
+            nil
+            (cons (head l) (mapn f (map f (tail l)))))
