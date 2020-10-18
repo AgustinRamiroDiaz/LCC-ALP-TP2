@@ -28,9 +28,6 @@ conversion' (Abs v t) s = Lam (conversion' t (v:s))
 vapp :: Value -> Value -> Value
 vapp (VLam abs) v = abs v
 vapp (VNeutral neutral) v = VNeutral (NApp neutral v)
--- vapp (VNeutral neutral@(NFree _)) v = VNeutral (NApp neutral v)
--- vapp (VNeutral (NApp neutral v)) v' = VNeutral (NApp neutral (vapp v v'))
--- ((neutral v) v')               ->      (neutral (v v'))
 
 eval :: NameEnv Value -> Term -> Value
 eval e t = eval' t (e, [])
@@ -54,5 +51,3 @@ quote' i (VLam f) = Lam $ quote' (i + 1) (f (VNeutral (NFree (Quote i))))
 quote' i (VNeutral (NFree name)) = case name of Global _ -> Free name
                                                 Quote k -> Bound (i - k - 1)
 quote' i (VNeutral (NApp neutral v)) = quote' i (VNeutral neutral) :@: quote' i v
---  of VNeutral (NFree (Quote k)) -> Lam (Bound (i - k - 1))
---                                                            v -> Lam (quote' (i+1) v)
