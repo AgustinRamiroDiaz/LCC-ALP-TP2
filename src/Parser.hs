@@ -14,6 +14,14 @@ import           Untyped
 -- Ejercicio 1
 ----------------------------------------------
 
+{-
+Dado un entero devuelve su expresión en 
+lambda-cálculo de su numeral de Church
+
+El algoritmo aplica (App) n veces sucesor (s) al cero (z)
+y al resultado le aplica la abstracción (Abs) de sucesor y cero
+-}
+
 num :: Integer -> LamTerm
 num x = Abs "s" (Abs "z" (f x))
         where f 0 = LVar "z"
